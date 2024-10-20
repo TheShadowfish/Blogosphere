@@ -11,6 +11,7 @@ def validate_email_domain(value):
         raise ValidationError(f"Разрешены следующие домены {', '.join(allowed_domains)}")
 
 
+
 def validate_password(value):
     """Валидатор пароля - что он длиннее 8 символов и содержит хотя бы одну цифру """
     if len(value) < 8:
