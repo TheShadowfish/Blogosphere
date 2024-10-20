@@ -1,5 +1,6 @@
 from django.db import models
 
+from comments.models import Comment
 from posts.validators import validate_post_title, validate_author_age
 from users.models import User
 
@@ -27,9 +28,9 @@ class Post(models.Model):
         verbose_name="Автор",
         help_text="Выберите автора",
     )
-    # comment = models.ManyToManyField(
-    #     Comment, verbose_name="Комментарии", help_text="Добавьте комментарии"
-    # )
+    comment = models.ManyToManyField(
+        Comment, verbose_name="Комментарии", help_text="Добавьте комментарии"
+    )
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата создания", help_text="Дата создания"
     )
