@@ -38,12 +38,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     objects = UserManager()
-    """логин
-пароль
-номер
-дата рождения
-дата создания
-дата редактирования"""
+
     username = models.CharField(max_length=40, unique=True, verbose_name="логин", help_text="Введите логин")
 
     email = models.EmailField(
