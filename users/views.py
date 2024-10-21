@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .models import User
@@ -5,7 +7,29 @@ from .serializers import UserSerializer, UserCreateSerializer, UserUpdateSeriali
 from .permissions import IsOwnerOrAdmin
 from rest_framework.generics import CreateAPIView
 
-
+@method_decorator(
+    name="list",
+    decorator=swagger_auto_schema(operation_description="Вывод списка пользователей"),
+)
+@method_decorator(
+    name="create", decorator=swagger_auto_schema(operation_description="Создание нового пользователя")
+)
+@method_decorator(
+    name="destroy",
+    decorator=swagger_auto_schema(operation_description="Удаление выбранного пользователя"),
+)
+@method_decorator(
+    name="update",
+    decorator=swagger_auto_schema(operation_description="Обновление выбранного пользователя"),
+)
+@method_decorator(
+    name="partial_update",
+    decorator=swagger_auto_schema(operation_description="Обновление (частичное) выбранного пользователя"),
+)
+@method_decorator(
+    name="retrieve",
+    decorator=swagger_auto_schema(operation_description="Просмотр информации о пользователе"),
+)
 class UserViewSet(viewsets.ModelViewSet):
     """
     ViewSet для обработки всех операций CRUD для модели User.

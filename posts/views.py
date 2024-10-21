@@ -1,3 +1,5 @@
+from django.utils.decorators import method_decorator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -7,7 +9,29 @@ from posts.serializers import PostSerializer
 
 
 
-# Create your views here.
+@method_decorator(
+    name="list",
+    decorator=swagger_auto_schema(operation_description="Вывод списка постов"),
+)
+@method_decorator(
+    name="create", decorator=swagger_auto_schema(operation_description="Создание нового поста")
+)
+@method_decorator(
+    name="destroy",
+    decorator=swagger_auto_schema(operation_description="Удаление выбранного поста"),
+)
+@method_decorator(
+    name="update",
+    decorator=swagger_auto_schema(operation_description="Обновление выбранного поста"),
+)
+@method_decorator(
+    name="partial_update",
+    decorator=swagger_auto_schema(operation_description="Обновление (частичное) выбранного поста"),
+)
+@method_decorator(
+    name="retrieve",
+    decorator=swagger_auto_schema(operation_description="Просмотр информации о посте"),
+)
 class PostViewSet(viewsets.ModelViewSet):
     """
     ViewSet для обработки всех операций CRUD для модели Post.

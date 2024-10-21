@@ -6,7 +6,7 @@ from posts.models import Post
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
-    # отображаемые поля
+
     list_display = ("title", "author", "created_at", "updated_at")
     # фильтр по дате создания
     list_filter = ("created_at",)
