@@ -8,4 +8,4 @@ class IsOwnerOrAdmin(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         # Только владелец или администратор может обновлять или удалять
-        return request.user.is_staff or obj == request.user
+        return request.user.is_staff or request.user.is_superuser or obj == request.user
