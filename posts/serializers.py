@@ -11,10 +11,12 @@ def validate_author_age(author):
         raise ValidationError("У автора должна быть указана дата рождения.")
 
     today = date.today()
+    birth = datetime.strptime(author.birth_date, "%Y-%m-%d").date()
+
     age = (
-        today.year
-        - author.birth_date.year
-        - ((today.month, today.day) < (author.birth_date.month, author.birth_date.day))
+            today.year
+            - birth.year
+            - ((today.month, today.day) < (birth.month, birth.day))
     )
 
     if age < 18:
