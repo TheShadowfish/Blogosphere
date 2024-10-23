@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-from users.validators import validate_email_domain, validate_password
+from users.validators import validate_email_domain, validate_password, validate_phone
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -55,7 +55,7 @@ class User(AbstractUser):
 
 
     phone_number = models.CharField(max_length=17, verbose_name="телефон", help_text="Введите номер телефона в формате 999 123 45 67, +7 подставится автоматически",
-        unique=True, null=True)
+        unique=True, null=True, validators=[validate_phone])
 
 
     birth_date = models.DateField(verbose_name="дата рождения", help_text="Введите вашу дату рождения", null=True)

@@ -33,13 +33,15 @@ def validate_phone(value):
     if not value.startswith("+7"):
         value = "+7" + value
 
+    # если в номере не только цифры
+    if not value[1:].isdigit():
+        raise ValidationError("Номер телефона должен содержать только цифры")
+
     # если номер слишком длинный +79876543210
     if len(value) != 12:
         raise ValidationError(
             "Номер телефона должен состоять из 11 цифр, код +7 не учитывается, и подставляется автоматически."
         )
-    # если в номере не только цифры
-    if not value[1:].isdigit():
-        raise ValidationError("Номер телефона должен содержать только цифры")
+
 
     return value

@@ -27,9 +27,10 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Автор",
         help_text="Выберите автора",
+        validators=[validate_author_age]
     )
     comment = models.ManyToManyField(
-        Comment, verbose_name="Комментарии", help_text="Добавьте комментарии"
+        Comment, verbose_name="Комментарии", help_text="Добавьте комментарии",
     )
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата создания", help_text="Дата создания"

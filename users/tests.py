@@ -225,3 +225,55 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNotNone(data)
 
+
+
+    def test_user_create_bad_phone(self):
+        url = reverse("users:user-list")
+        data = {
+            "username": "TEST-phone",
+            "email": "TEST-phone@mail.ru",
+            "birth_date": "2012-04-01",
+            "phone_number": "+7987000000000000",
+            "password": "testpassword2"
+        }
+        response = self.client.post(url, data)
+        result = response.json()
+
+        error_text = {'phone_number': ['Номер телефона должен состоять из 11 цифр, код +7 не учитывается, и подставляется автоматически.']}
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(result, error_text)
+
+    def test_user_create_bad_phone_2(self):
+        url = reverse("users:user-list")
+        data = {
+            "username": "TEST-phone",
+            "email": "TEST-phone@mail.ru",
+            "birth_date": "2012-04-01",
+            "phone_number": "+79870mooo",
+            "password": "testpassword2"
+        }
+        response = self.client.post(url, data)
+        result = response.json()
+        error_text_2 = {'phone_number': ['Номер телефона должен содержать только цифры']}
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(result, error_text_2)
+
+    def test_user_create_phone_autoformat(self):
+        url = reverse("users:user-list")
+        data = {
+            "username": "TEST-phone",
+            "email": "TEST-phone@mail.ru",
+            "birth_date": "2012-04-01",
+            "phone_number": "987-778-45-48",
+            "password": "testpassword2"
+        }
+        response = self.client.post(url, data)
+        result = response.json()
+
+
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(result.get("phone_number"), "+79877784548")
+

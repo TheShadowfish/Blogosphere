@@ -1,8 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 
 import re
 
 from rest_framework.exceptions import ValidationError
+
+from users.models import User
 
 
 def validate_post_title(value):
@@ -22,15 +24,26 @@ def validate_post_title(value):
 
 
 
-def validate_author_age(author):
+def validate_author_age(value):
     """Проверка возраста автора (не менее 18 лет)"""
-    if not author.birth_date:
+
+    # черезкитайский способ работы - это и есть настоящий Django
+    # нельзя понять, засунет ли он в функцию число или сразу объект, логика нулевая, предсказать невозможно
+    if isinstance(value, int):
+        author = User.objects.get(pk=value)
+        birth = author.birth_date
+    else:
+        birth = value.birth_date
+
+    if not birth:
         raise ValidationError("У автора должна быть указана дата рождения для публикации постов.")
 
     today = date.today()
 
-    birth = author.birth_date
-    # birth = datetime.strptime(author.birth_date, "%Y-%m-%d").date()
+
+
+    # birth = author.birth_date
+    # birth = datetime.strptime(value.birth_date, "%Y-%m-%d").date()
 
     age = (
             today.year
@@ -39,11 +52,6 @@ def validate_author_age(author):
     )
 
 
-    age = (
-            today.year
-            - birth.year
-            - ((today.month, today.day) < (birth.month, author.birth_date.day))
-    )
 
     if age < 18:
         raise ValidationError("Автор должен быть старше 18 лет для публикации постов.")
