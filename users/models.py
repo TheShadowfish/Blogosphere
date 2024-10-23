@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-from users.validators import validate_email_domain, validate_password
+from users.validators import validate_email_domain, validate_password, validate_phone
 
 NULLABLE = {"blank": True, "null": True}
 
@@ -38,12 +38,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     objects = UserManager()
-    """логин
-пароль
-номер
-дата рождения
-дата создания
-дата редактирования"""
+
     username = models.CharField(max_length=40, unique=True, verbose_name="логин", help_text="Введите логин")
 
     email = models.EmailField(
@@ -60,10 +55,10 @@ class User(AbstractUser):
 
 
     phone_number = models.CharField(max_length=17, verbose_name="телефон", help_text="Введите номер телефона в формате 999 123 45 67, +7 подставится автоматически",
-        unique=True)
+        unique=True, null=True, validators=[validate_phone])
 
 
-    birth_date = models.DateField(verbose_name="дата рождения", help_text="Введите вашу дату рождения")
+    birth_date = models.DateField(verbose_name="дата рождения", help_text="Введите вашу дату рождения", null=True)
     created_at = models.DateField(auto_now_add=True, verbose_name="дата создания", help_text="Введите дату создания пользователя")
     updated_at = models.DateField(auto_now=True, verbose_name="дата редактирования", help_text="Введите дату редактирования пользователя")
 
@@ -78,16 +73,17 @@ class User(AbstractUser):
         return f"{self.username} - ({self.email})"
 
     def clean_phone(self):
-        # Убираем пробелы
-        phone = self.phone.replace(" ", "").replace("-", "")
-        # Добавляем код +7, если не введен
-        if not phone.startswith("+7"):
-            phone = "+7" + phone
-        return phone
+        if self.phone_number is not None:
+            # Убираем пробелы
+            phone = self.phone_number.replace(" ", "").replace("-", "")
+            # Добавляем код +7, если не введен
+            if not phone.startswith("+7"):
+                phone = "+7" + phone
+            return phone
 
     def save(self, *args, **kwargs):
         # Перед сохранением форматируем номер телефона
-        self.phone = self.clean_phone()
+        self.phone_number = self.clean_phone()
         super().save(*args, **kwargs)
 
 
