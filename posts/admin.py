@@ -18,6 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     # # ссылка на автора поста
     # list_display_links = ("title", "author",)
 
+
     @admin.display(description="ссылка на автора")
     def author_link(self, obj):
 
@@ -43,3 +44,12 @@ class PostAdmin(admin.ModelAdmin):
     #
     #     else:
     #         return None
+    # class PostInline(admin.TabularInline):
+    #     model = Posts.tags.through
+
+    # @admin.register(Tags)
+    # class TagAdmin(admin.ModelAdmin):
+    #     model = Tags
+    #     inlines = [
+    #         PostInline,
+    #     ]
