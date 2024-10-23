@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from posts.permissions import IsAuthorOrAdmin
 from .serializers import CommentSerializer
 
+
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(operation_description="Вывод списка комментариев"),

@@ -119,7 +119,6 @@ class UserTestCase(APITestCase):
         self.assertEqual(Post.objects.all().count(), 1)
         self.assertIsNotNone(result)
 
-
     def test_post_update_by_owner(self):
         self.client.force_authenticate(user=self.user_1)
 
@@ -130,7 +129,6 @@ class UserTestCase(APITestCase):
         }
 
         response = self.client.patch(url, data)
-
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -178,7 +176,6 @@ class UserTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-
     def test_post_delete_by_owner(self):
         self.client.force_authenticate(user=self.user_1)
 
@@ -222,7 +219,7 @@ class UserTestCase(APITestCase):
         self.assertIsNotNone(data)
 
     def test_all_retrieve(self):
-        url = reverse("posts:post-detail", args=(self.post.pk,))  #suppliers:products-list"
+        url = reverse("posts:post-detail", args=(self.post.pk,))
         response = self.client.get(url)
         data = response.json()
 

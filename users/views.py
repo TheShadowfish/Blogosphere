@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .models import User
 from .serializers import UserSerializer, UserCreateSerializer, UserUpdateSerializer
 from .permissions import IsOwnerOrAdmin
-from rest_framework.generics import CreateAPIView
+
 
 @method_decorator(
     name="list",
@@ -50,9 +50,8 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def get_permissions(self):
-        """
-        Возвращает список разрешений для каждого действия.
-        """
+        """Возвращает список разрешений для каждого действия."""
+
         permission_classes = {
             "create": [AllowAny],  # Разрешаем всем доступ к регистрации
             "retrieve": [

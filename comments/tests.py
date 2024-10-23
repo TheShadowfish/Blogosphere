@@ -57,8 +57,8 @@ class UserTestCase(APITestCase):
         )
 
         self.comment = Comment.objects.create(
-            author = self.user_2,
-            text = "О-ло-ло!, о-ло-ло!, набигает тро-ло-ло!!!"
+            author=self.user_2,
+            text="О-ло-ло!, о-ло-ло!, набигает тро-ло-ло!!!"
         )
 
     def test_comment_create(self):
@@ -76,15 +76,12 @@ class UserTestCase(APITestCase):
         self.assertEqual(Comment.objects.all().count(), 2)
         self.assertIsNotNone(result)
 
-
     def test_comment_create_no_auth(self):
         url = reverse("comments:comment-list")
         data = {
             "text": "Еще куча анонимного троллинга!!!!",
         }
         response = self.client.post(url, data)
-
-        result = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -114,8 +111,10 @@ class UserTestCase(APITestCase):
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     #
     def test_comment_update_by_admin(self):
+
         self.client.force_authenticate(user=self.admin)
 
         url = reverse("comments:comment-detail", args=(self.comment.pk,))
@@ -141,7 +140,6 @@ class UserTestCase(APITestCase):
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
 
     def test_comment_delete_by_owner(self):
         self.client.force_authenticate(user=self.user_2)
@@ -186,7 +184,7 @@ class UserTestCase(APITestCase):
         self.assertIsNotNone(data)
 
     def test_comments_all_retrieve(self):
-        url = reverse("comments:comment-detail", args=(self.comment.pk,))  #suppliers:products-list"
+        url = reverse("comments:comment-detail", args=(self.comment.pk,))
         response = self.client.get(url)
         data = response.json()
 

@@ -1,8 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
+
 
 from users.validators import validate_email_domain, validate_password, validate_phone
 
@@ -36,6 +35,7 @@ class UserManager(BaseUserManager):
 
         return self._create_user(username, password, **extra_fields)
 
+
 class User(AbstractUser):
     objects = UserManager()
 
@@ -53,17 +53,15 @@ class User(AbstractUser):
         validators=[validate_password],
     )
 
-
-    phone_number = models.CharField(max_length=17, verbose_name="телефон", help_text="Введите номер телефона в формате 999 123 45 67, +7 подставится автоматически",
-        unique=True, null=True, validators=[validate_phone])
-
-
+    phone_number = models.CharField(max_length=17, verbose_name="телефон",
+                                    help_text="Введите номер телефона в формате 999 123 45 67, +7 подставится "
+                                              "автоматически",
+                                    unique=True, null=True, validators=[validate_phone])
     birth_date = models.DateField(verbose_name="дата рождения", help_text="Введите вашу дату рождения", null=True)
-    created_at = models.DateField(auto_now_add=True, verbose_name="дата создания", help_text="Введите дату создания пользователя")
-    updated_at = models.DateField(auto_now=True, verbose_name="дата редактирования", help_text="Введите дату редактирования пользователя")
-
-
-
+    created_at = models.DateField(auto_now_add=True, verbose_name="дата создания",
+                                  help_text="Введите дату создания пользователя")
+    updated_at = models.DateField(auto_now=True, verbose_name="дата редактирования",
+                                  help_text="Введите дату редактирования пользователя")
 
     class Meta:
         verbose_name = "пользователь"
@@ -85,5 +83,3 @@ class User(AbstractUser):
         # Перед сохранением форматируем номер телефона
         self.phone_number = self.clean_phone()
         super().save(*args, **kwargs)
-
-

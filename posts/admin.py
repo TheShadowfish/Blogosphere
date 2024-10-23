@@ -18,17 +18,6 @@ class PostAdmin(admin.ModelAdmin):
     # # ссылка на автора поста
     # list_display_links = ("title", "author",)
 
-
-    # вот какого черта, спрашивается? Зачем? Что, при любом изменении поста админ сразу авторство присвоит?
-    # да ещё и валидацию по возрасту обойдет. Хорошо, да.
-    # def save_model(self, request, obj, form, change):
-    #     """
-    #     Переопределяем метод сохранения модели, чтобы автоматически устанавливать автора как текущего пользователя.
-    #     """
-    #     if not obj.pk:  # Если это новый объект (пост)
-    #         obj.author = request.user  # Устанавливаем текущего пользователя как автора
-    #     super().save_model(request, obj, form, change)
-
     @admin.display(description="ссылка на автора")
     def author_link(self, obj):
 
@@ -54,5 +43,3 @@ class PostAdmin(admin.ModelAdmin):
     #
     #     else:
     #         return None
-
-

@@ -8,7 +8,6 @@ from posts.permissions import IsAuthorOrAdmin
 from posts.serializers import PostSerializer
 
 
-
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(operation_description="Вывод списка постов"),
@@ -46,9 +45,7 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     def get_permissions(self):
-        """
-        Возвращает список разрешений для каждого действия.
-        """
+        """Возвращает список разрешений для каждого действия."""
         permission_classes = {
             "create": [
                 IsAuthenticated

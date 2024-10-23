@@ -14,7 +14,7 @@ load_dotenv(dotenv_path=dot_env)
 
 
 class Command(BaseCommand):
-    help = "Создание учётки админа"
+    # help = "Создание учётки админа"
 
     def handle(self, *args, **options):
         user = User.objects.create(
