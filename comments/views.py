@@ -1,6 +1,8 @@
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.exceptions import ValidationError
 
+from posts.models import Post
 from .models import Comment
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -32,7 +34,6 @@ from .serializers import CommentSerializer
     decorator=swagger_auto_schema(operation_description="Просмотр информации о комментарии"),
 )
 class CommentViewSet(ModelViewSet):
-
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
@@ -71,4 +72,12 @@ class CommentViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         # Автоматически устанавливаем текущего пользователя как автора
-        serializer.save(author=self.request.user)
+
+        ct = serializer.save(author=self.request.user)
+        ct.save()
+
+        post_id = serializer.context.get('post', None)
+
+        if post_id:
+            post = Post.objects.get(id=post_id)
+            post.comment.add(ct)

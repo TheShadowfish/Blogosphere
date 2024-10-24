@@ -33,8 +33,9 @@ def validate_post_title(value):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ["id", "title", "text", "image", "author", "created_at", "updated_at"]
-        read_only_fields = [ "comment", "author", "created_at", "updated_at"]
+        # depth = 1
+        fields = ["id", "title", "text", "comment", "image", "author", "created_at", "updated_at", ]
+        read_only_fields = ["author", "created_at", "updated_at"]
 
     def validate(self, data):
         title = data.get("title")
