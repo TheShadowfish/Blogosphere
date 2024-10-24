@@ -61,7 +61,13 @@
     ```
 8. При необходимости загрузите тестовые данные из папки data:
     ```bash
-    poetry run python manage.py loaddata data/testdata.json
+    poetry run python manage.py loaddata data/users.json
+    ```
+    ```bash
+    poetry run python manage.py loaddata data/comments.json
+    ```
+    ```bash
+    poetry run python manage.py loaddata data/posts.json
     ```
 
    
