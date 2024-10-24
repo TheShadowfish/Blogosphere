@@ -50,8 +50,6 @@ class UserTestCase(APITestCase):
             is_superuser=True,
             is_staff=True
         )
-        # self.client.force_authenticate(user=self.admin)
-
 
         self.comment = Comment.objects.create(
             author=self.user_2,

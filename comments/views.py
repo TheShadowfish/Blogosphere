@@ -1,6 +1,5 @@
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.exceptions import ValidationError
 
 from posts.models import Post
 from .models import Comment
@@ -76,7 +75,7 @@ class CommentViewSet(ModelViewSet):
         ct = serializer.save(author=self.request.user)
         ct.save()
 
-        post_id = serializer.context.get('post', None)
+        post_id = serializer.context.get("post", None)
 
         if post_id:
             post = Post.objects.get(id=post_id)

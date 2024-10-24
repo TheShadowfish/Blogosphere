@@ -1,14 +1,17 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SerializerMethodField
 
 from posts.models import Post
-from posts.serializers import PostSerializer
 from .models import Comment
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    post = PostSerializer(
-        many=True, read_only=True, help_text="Пост комментария"
+    # post = PostSerializer(
+    #     many=True, read_only=True, help_text="Пост комментария"
+    # )
+    post = SerializerMethodField(
+        read_only=True, help_text="Связанные посты"
     )
 
     class Meta:
@@ -20,6 +23,12 @@ class CommentSerializer(serializers.ModelSerializer):
             "created_at",
             "post"
         ]
+
+    def get_post(self, obj):
+        posts = Post.objects.filter(comment__pk=obj.pk)
+        post = [f"id={p.pk}: {str(p)}" for p in posts]
+
+        return post
 
     def create(self, validated_data):
         """Привязка коментария к соответствующему посту, установка автором текущего пользователя"""
@@ -35,9 +44,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
         if post_id_raw:
             try:
-                post = Post.objects.get(id=post_id_raw)
+                Post.objects.get(id=post_id_raw)
                 self.context["post"] = post_id_raw
-            except:
+            except Exception:
                 raise ValidationError(f"Нет поста с таким ID {post_id_raw}")
 
         if self.is_valid():
