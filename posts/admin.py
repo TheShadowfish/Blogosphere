@@ -9,14 +9,14 @@ from posts.models import Post
 class PostAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
 
-    list_display = ("title", "text", "author_link", "author", "created_at", "updated_at",)
+    list_display = ("id", "title", "text", "author_link", "created_at", "updated_at",)
     # фильтр по дате создания
     list_filter = ("created_at",)
     # поиск по названию поста
     search_fields = ("title",)
 
-    # # ссылка на автора поста
-    list_display_links = ("author", "author",)
+    # ссылка на автора поста
+    list_display_links = ("title",)
 
     @admin.display(description="ссылка на автора")
     def author_link(self, obj):

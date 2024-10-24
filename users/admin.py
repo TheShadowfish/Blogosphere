@@ -13,3 +13,11 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    readonly_fields = ("created_at", "updated_at")
+
+    # фильтр по дате создания
+    list_filter = ("created_at",)
+    # поиск
+    search_fields = ("username",)
+    # ссылка
+    list_display_links = ("username",)
