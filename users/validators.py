@@ -11,13 +11,13 @@ def validate_email_domain(value):
         raise ValidationError(f"Разрешены следующие домены {', '.join(allowed_domains)}")
 
 
-
 def validate_password(value):
-    """Валидатор пароля - что он длиннее 8 символов и содержит хотя бы одну цифру """
+    """Валидатор пароля - что он длиннее 8 символов и содержит хотя бы одну цифру."""
+
     if len(value) < 8:
         raise ValidationError("Пароль должен быть длиннее 8 символов")
 
-    digits = [s for s in value if s in '1234567890']
+    digits = [s for s in value if s in "1234567890"]
 
     if len(digits) < 1:
         raise ValidationError("Строка должна содержать хотя бы одну цифру")
@@ -42,6 +42,5 @@ def validate_phone(value):
         raise ValidationError(
             "Номер телефона должен состоять из 11 цифр, код +7 не учитывается, и подставляется автоматически."
         )
-
 
     return value

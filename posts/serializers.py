@@ -13,11 +13,7 @@ def validate_author_age(author):
     today = date.today()
     birth = datetime.strptime(author.birth_date, "%Y-%m-%d").date()
 
-    age = (
-            today.year
-            - birth.year
-            - ((today.month, today.day) < (birth.month, birth.day))
-    )
+    age = (today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day)))
 
     if age < 18:
         raise ValidationError("Автор должен быть старше 18 лет для публикации постов.")
@@ -37,7 +33,8 @@ def validate_post_title(value):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ["id", "title", "text", "image", "author", "created_at", "updated_at"]
+        # depth = 1
+        fields = ["id", "title", "text", "comment", "image", "author", "created_at", "updated_at", ]
         read_only_fields = ["author", "created_at", "updated_at"]
 
     def validate(self, data):

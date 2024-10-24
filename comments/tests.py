@@ -47,18 +47,16 @@ class UserTestCase(APITestCase):
             is_superuser=True,
             is_staff=True
         )
-        # self.client.force_authenticate(user=self.admin)
 
+        self.comment = Comment.objects.create(
+            author=self.user_2,
+            text="О-ло-ло!, о-ло-ло!, набигает тро-ло-ло!!!"
+        )
         self.post = Post.objects.create(
             title="rererePost",
             text="Maximal REPOST!!! It's very TESTINGUABLE!",
             image=None,
             author=self.user_1,
-        )
-
-        self.comment = Comment.objects.create(
-            author = self.user_2,
-            text = "О-ло-ло!, о-ло-ло!, набигает тро-ло-ло!!!"
         )
 
     def test_comment_create(self):
@@ -69,13 +67,46 @@ class UserTestCase(APITestCase):
             "text": "200 килобайт ТРОЛЛИНГА. Толстого троллинга.",
         }
         response = self.client.post(url, data)
-
         result = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Comment.objects.all().count(), 2)
         self.assertIsNotNone(result)
 
+    def test_comment_create_to_post(self):
+        self.client.force_authenticate(user=self.user_1)
+
+        url = reverse("comments:comment-list")
+        data = {
+            "post": [self.post.pk + 1, ],
+            "text": "200 килобайт ТРОЛЛИНГА. Не слишком толстого троллинга.",
+        }
+        response = self.client.post(url, data)
+
+        result = response.json()
+        # print(result)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Comment.objects.all().count(), 1)
+        self.assertEqual(result, [f"Нет поста с таким ID {self.post.pk + 1}", ])
+        self.assertEqual(len(self.post.comment.all()), 0)
+
+    def test_comment_create_to_unexists_post(self):
+        self.client.force_authenticate(user=self.user_1)
+
+        url = reverse("comments:comment-list")
+        data = {
+            "post": [self.post.pk, ],
+            "text": "200 килобайт ТРОЛЛИНГА. Не слишком толстого троллинга.",
+        }
+        response = self.client.post(url, data)
+
+        result = response.json()
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Comment.objects.all().count(), 2)
+        self.assertIsNotNone(result)
+        self.assertIsNotNone(self.post.comment.all())
 
     def test_comment_create_no_auth(self):
         url = reverse("comments:comment-list")
@@ -84,9 +115,7 @@ class UserTestCase(APITestCase):
         }
         response = self.client.post(url, data)
 
-        result = response.json()
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_comment_update_by_owner(self):
         self.client.force_authenticate(user=self.user_2)
@@ -114,6 +143,7 @@ class UserTestCase(APITestCase):
         response = self.client.patch(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     #
     def test_comment_update_by_admin(self):
         self.client.force_authenticate(user=self.admin)
@@ -140,8 +170,7 @@ class UserTestCase(APITestCase):
 
         data = response.json()
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_comment_delete_by_owner(self):
         self.client.force_authenticate(user=self.user_2)
@@ -173,7 +202,7 @@ class UserTestCase(APITestCase):
         url = reverse("comments:comment-detail", args=(self.comment.pk,))
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_comments_all_list(self):
         # self.client.force_authenticate(user=self.user_1)
@@ -186,7 +215,7 @@ class UserTestCase(APITestCase):
         self.assertIsNotNone(data)
 
     def test_comments_all_retrieve(self):
-        url = reverse("comments:comment-detail", args=(self.comment.pk,))  #suppliers:products-list"
+        url = reverse("comments:comment-detail", args=(self.comment.pk,))
         response = self.client.get(url)
         data = response.json()
 

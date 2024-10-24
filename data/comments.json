@@ -1,0 +1,1 @@
+[{"model": "comments.comment", "pk": 1, "fields": {"author": 3, "text": "да ты что, правда что ли?", "created_at": "2024-10-22T23:17:51.358Z", "updated_at": "2024-10-22T23:17:51.358Z"}}, {"model": "comments.comment", "pk": 2, "fields": {"author": 3, "text": "хренотень все это!!!", "created_at": "2024-10-22T23:35:56.841Z", "updated_at": "2024-10-22T23:35:56.841Z"}}]

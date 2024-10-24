@@ -1,3 +1,4 @@
+from comments.models import Comment
 from posts.models import Post
 from users.models import User
 
@@ -49,8 +50,15 @@ class UserTestCase(APITestCase):
             is_superuser=True,
             is_staff=True
         )
-        # self.client.force_authenticate(user=self.admin)
 
+        self.comment = Comment.objects.create(
+            author=self.user_2,
+            text="О-ло-ло!, о-ло-ло!, набигает тро-ло-ло!!!"
+        )
+        self.comment_2 = Comment.objects.create(
+            author=self.user_1,
+            text="200 килобайт ТРОЛЛИНГА. Толстого троллинга.",
+        )
         self.post = Post.objects.create(
             title="rererePost",
             text="Maximal REPOST!!! It's very TESTINGUABLE!",
@@ -65,6 +73,7 @@ class UserTestCase(APITestCase):
         data = {
             "title": "TEST",
             "text": "fire in the hole!",
+            "comment": [self.comment.pk, self.comment_2.pk]
         }
         response = self.client.post(url, data)
 
@@ -115,10 +124,9 @@ class UserTestCase(APITestCase):
 
         result = response.json()
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Post.objects.all().count(), 1)
         self.assertIsNotNone(result)
-
 
     def test_post_update_by_owner(self):
         self.client.force_authenticate(user=self.user_1)
@@ -130,7 +138,6 @@ class UserTestCase(APITestCase):
         }
 
         response = self.client.patch(url, data)
-
         data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -176,8 +183,7 @@ class UserTestCase(APITestCase):
 
         data = response.json()
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_delete_by_owner(self):
         self.client.force_authenticate(user=self.user_1)
@@ -209,7 +215,7 @@ class UserTestCase(APITestCase):
         url = reverse("posts:post-detail", args=(self.post.pk,))
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_all_list(self):
         # self.client.force_authenticate(user=self.user_1)
@@ -222,7 +228,7 @@ class UserTestCase(APITestCase):
         self.assertIsNotNone(data)
 
     def test_all_retrieve(self):
-        url = reverse("posts:post-detail", args=(self.post.pk,))  #suppliers:products-list"
+        url = reverse("posts:post-detail", args=(self.post.pk,))
         response = self.client.get(url)
         data = response.json()
 

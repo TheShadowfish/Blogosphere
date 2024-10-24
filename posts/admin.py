@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-
 from posts.models import Post
 
 
@@ -10,24 +9,14 @@ from posts.models import Post
 class PostAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
 
-    list_display = ("title", "text", "author_link", "created_at", "updated_at",)
+    list_display = ("title", "text", "author_link", "author", "created_at", "updated_at",)
     # фильтр по дате создания
     list_filter = ("created_at",)
     # поиск по названию поста
     search_fields = ("title",)
+
     # # ссылка на автора поста
-    # list_display_links = ("title", "author",)
-
-
-    # вот какого черта, спрашивается? Зачем? Что, при любом изменении поста админ сразу авторство присвоит?
-    # да ещё и валидацию по возрасту обойдет. Хорошо, да.
-    # def save_model(self, request, obj, form, change):
-    #     """
-    #     Переопределяем метод сохранения модели, чтобы автоматически устанавливать автора как текущего пользователя.
-    #     """
-    #     if not obj.pk:  # Если это новый объект (пост)
-    #         obj.author = request.user  # Устанавливаем текущего пользователя как автора
-    #     super().save_model(request, obj, form, change)
+    list_display_links = ("author", "author",)
 
     @admin.display(description="ссылка на автора")
     def author_link(self, obj):
@@ -54,5 +43,12 @@ class PostAdmin(admin.ModelAdmin):
     #
     #     else:
     #         return None
+    # class PostInline(admin.TabularInline):
+    #     model = Posts.tags.through
 
-
+    # @admin.register(Tags)
+    # class TagAdmin(admin.ModelAdmin):
+    #     model = Tags
+    #     inlines = [
+    #         PostInline,
+    #     ]

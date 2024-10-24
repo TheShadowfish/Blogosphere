@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 # from suppliers.models import Supplier, Product, Contacts
 from users.models import User
 
+
 class UserTestCase(APITestCase):
     """Тестирование модели User"""
 
@@ -17,7 +18,6 @@ class UserTestCase(APITestCase):
     def setUp(self):
         """Создание тестовой модели Пользователей и Админа"""
 
-
         self.user_1 = User.objects.create(
             username="testuser",
             email="testuser@mail.ru",
@@ -26,7 +26,6 @@ class UserTestCase(APITestCase):
             password="testpassword",
             is_superuser=False
         )
-        # self.client.force_authenticate(user=self.user_1)
 
         self.user_2 = User.objects.create(
             username="testuser_2",
@@ -36,7 +35,6 @@ class UserTestCase(APITestCase):
             password="testpassword",
             is_superuser=False
         )
-        # self.client.force_authenticate(user=self.user_2)
 
         self.admin = User.objects.create(
             username="testadmin",
@@ -47,27 +45,11 @@ class UserTestCase(APITestCase):
             is_superuser=True,
             is_staff=True
         )
-        # self.client.force_authenticate(user=self.admin)
-
-    # def test_user_login(self):
-    #     url = reverse("users:token_obtain_pair")
-    #
-    #     data = {
-    #         "username": "testadmin",
-    #         "email": "testadmin@mail.ru",
-    #     }
-    #     response = self.client.post(url, data)
-    #
-    #     data = response.json()
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(User.objects.all().count(), 4)
-
 
     def test_user_retrieve_admin(self):
         self.client.force_authenticate(user=self.admin)
 
-        url = reverse("users:user-detail", args=(self.admin.pk,))  #suppliers:products-list"
+        url = reverse("users:user-detail", args=(self.admin.pk,))
         response = self.client.get(url)
         data = response.json()
 
@@ -89,10 +71,8 @@ class UserTestCase(APITestCase):
 
         url = reverse("users:user-detail", args=(self.user_1.pk,))
         response = self.client.get(url)
-        data = response.json()
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        # self.assertEqual(data.get("username"), self.user_1.username)
 
     def test_user_create(self):
         url = reverse("users:user-list")
@@ -204,7 +184,6 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(User.objects.all().count(), 2)
 
-
     def test_admin_list(self):
         self.client.force_authenticate(user=self.admin)
         url = reverse("users:user-list")
@@ -225,8 +204,6 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIsNotNone(data)
 
-
-
     def test_user_create_bad_phone(self):
         url = reverse("users:user-list")
         data = {
@@ -239,7 +216,8 @@ class UserTestCase(APITestCase):
         response = self.client.post(url, data)
         result = response.json()
 
-        error_text = {'phone_number': ['Номер телефона должен состоять из 11 цифр, код +7 не учитывается, и подставляется автоматически.']}
+        error_text = {"phone_number": ["Номер телефона должен состоять из 11 цифр, код +7 не учитывается, "
+                                       "и подставляется автоматически."]}
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(result, error_text)
@@ -255,7 +233,7 @@ class UserTestCase(APITestCase):
         }
         response = self.client.post(url, data)
         result = response.json()
-        error_text_2 = {'phone_number': ['Номер телефона должен содержать только цифры']}
+        error_text_2 = {"phone_number": ["Номер телефона должен содержать только цифры"]}
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(result, error_text_2)
@@ -272,8 +250,5 @@ class UserTestCase(APITestCase):
         response = self.client.post(url, data)
         result = response.json()
 
-
-
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(result.get("phone_number"), "+79877784548")
-

@@ -8,7 +8,8 @@ schema_view = get_schema_view(
     openapi.Info(
         title="API приложение для написания и комментирования постов",
         default_version="v1.01",
-        description="Приложение, позволяющее реализовать регистрацию пользователей, написание ими постов и написание комментариев к ним",
+        description="Приложение, позволяющее реализовать регистрацию пользователей, написание ими постов и написание "
+                    "комментариев к ним",
         contact=openapi.Contact(email="shadowfish@yandex.ru"),
         license=openapi.License(name="BSD License"),
     ),

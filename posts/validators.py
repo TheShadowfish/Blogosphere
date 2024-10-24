@@ -27,11 +27,7 @@ def validate_author_age(value):
         raise ValidationError("У автора должна быть указана дата рождения для публикации постов.")
 
     today = date.today()
-    age = (
-            today.year
-            - birth.year
-            - ((today.month, today.day) < (birth.month, birth.day))
-    )
+    age = (today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day)))
 
     if age < 18:
         raise ValidationError("Автор должен быть старше 18 лет для публикации постов.")
